@@ -263,6 +263,7 @@ body {
 
 .progress-area {
   margin-top: 40px;
+  width:100%;
 }
 
 .time {
@@ -278,6 +279,13 @@ body {
 .progress-bar {
   width: 100%;
   cursor: pointer;
+  display:block;
+  height:4px;
+  accent-color:#c79b63;
+}
+
+#progressBar {
+    width:100%;
 }
 
 .controls {
@@ -330,6 +338,12 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.rain-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .rain-text h3 {

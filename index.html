@@ -60,17 +60,25 @@
       <!-- Playlist -->
       <div class="playlist" id="playlist"></div>
 
-      <!-- Progress -->
-      <div class="progress-area">
+    <!-- Progress -->
+        <div class="progress-area">
 
         <div class="time">
-          <span>1:24</span>
-          <span>4:12</span>
+            <span id="currentTime">0:00</span>
+            <span id="duration">0:00</span>
         </div>
 
-        <input type="range" value="30" class="progress-bar">
+        <input type="range" id="progressBar" value="0" min="0" max="100">
+        </div>
 
-      </div>
+        <!-- Volume -->
+        <div class="volume-container">
+
+        <i class="fa-solid fa-volume-low"></i>
+
+        <input type="range" id="volumeBar" min="0" max="1" step="0.01" value="0.7">
+
+        </div>
 
       <!-- Controls -->
       <div class="controls">
@@ -89,29 +97,32 @@
 
       </div>
 
-      <!-- Rain Toggle -->
-      <div class="rain-container">
+    <div class="rain-container">
 
-        <div class="rain-text">
-          <h3>Rain Ambience</h3>
-          <p>Add soft rain sounds while reading</p>
-        </div>
+    <div class="rain-text">
+        <h3>Rain Ambience</h3>
+        <p>Add soft rain sounds while reading</p>
+    </div>
+
+    <div class="rain-controls">
 
         <label class="switch">
-          <input type="checkbox" id="rainToggle">
-          <span class="slider"></span>
+        <input type="checkbox" id="rainToggle">
+        <span class="slider"></span>
         </label>
 
-      </div>
+        <input
+        type="range"
+        id="rainVolume"
+        min="0"
+        max="1"
+        step="0.01"
+        value="0.35"
+        >
 
-      <!-- Volume -->
-      <div class="volume-container">
+    </div>
 
-        <i class="fa-solid fa-volume-low"></i>
-
-        <input type="range" min="0" max="100" value="70">
-
-      </div>
+    </div>
 
     </section>
 

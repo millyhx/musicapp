@@ -1,9 +1,6 @@
 const playBtn = document.getElementById("playBtn");
 const music = document.getElementById("music");
 
-const rainToggle = document.getElementById("rainToggle");
-const rainAudio = document.getElementById("rainAudio");
-
 const themeToggle = document.getElementById("themeToggle");
 
 const playlistContainer = document.getElementById("playlist");
@@ -12,6 +9,21 @@ const vinyl = document.querySelector(".record");
 
 const songTitle = document.querySelector(".song-info h1");
 const songArtist = document.querySelector(".song-info p");
+
+const progressBar = document.getElementById("progressBar");
+const volumeBar = document.getElementById("volumeBar");
+
+const currentTimeEl = document.getElementById("currentTime");
+const durationEl = document.getElementById("duration");
+
+const rainToggle = document.getElementById("rainToggle");
+const rainVolume = document.getElementById("rainVolume");
+const rainAudio = document.getElementById("rainAudio");
+
+// always keep volume synced
+rainAudio.volume = rainVolume.value;
+music.volume = volumeBar.value;
+
 
 let currentSong = 0;
 let isPlaying = false;
@@ -49,6 +61,10 @@ function loadSong(index) {
 
   songTitle.textContent = song.title;
   songArtist.textContent = song.artist;
+
+  progressBar.value = 0;
+  currentTimeEl.textContent = "0:00";
+  durationEl.textContent = "0:00";
 
   updatePlaylistUI();
 }
@@ -128,17 +144,97 @@ music.addEventListener("ended", () => {
   playSong();
 });
 
+// PROGRESS BAR TRACKING
+
+music.addEventListener("timeupdate", () => {
+  if (!music.duration) return;
+
+  const progressPercent =
+    (music.currentTime / music.duration) * 100;
+
+  progressBar.value = progressPercent;
+
+  // update time display
+  currentTimeEl.textContent = formatTime(music.currentTime);
+  durationEl.textContent = formatTime(music.duration);
+});
+
+progressBar.addEventListener("input", () => {
+  if (!music.duration) return;
+
+  const seekTime =
+    (progressBar.value / 100) * music.duration;
+
+  music.currentTime = seekTime;
+});
+
+function formatTime(seconds) {
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+
+  return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
+}
+
+// FORWARD AND BACK BUTTONS
+
+const prevBtn = document.querySelector(".fa-backward").parentElement;
+const nextBtn = document.querySelector(".fa-forward").parentElement;
+
+prevBtn.addEventListener("click", () => {
+  currentSong--;
+
+  if (currentSong < 0) {
+    currentSong = songs.length - 1;
+  }
+
+  loadSong(currentSong);
+  playSong();
+});
+
+nextBtn.addEventListener("click", () => {
+  currentSong++;
+
+  if (currentSong >= songs.length) {
+    currentSong = 0;
+  }
+
+  loadSong(currentSong);
+  playSong();
+});
+
+
 // RAIN TOGGLE
 
 rainToggle.addEventListener("change", () => {
+
   if (rainToggle.checked) {
+
     rainAudio.src = "assets/rain.mp3";
-    rainAudio.volume = 0.35;
+    rainAudio.loop = true;
+
+    rainAudio.volume = parseFloat(rainVolume.value);
+
     rainAudio.play();
+
   } else {
     rainAudio.pause();
   }
+
 });
+
+rainVolume.addEventListener("input", () => {
+
+  rainAudio.volume = parseFloat(rainVolume.value);
+
+});
+
+// VOLUME CONTROLS
+
+volumeBar.addEventListener("input", () => {
+  music.volume = volumeBar.value;
+});
+
+
 
 // THEME TOGGLE
 
