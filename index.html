@@ -1,0 +1,126 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Velvet Room</title>
+
+  <link rel="stylesheet" href="style.css"/>
+
+  <!-- Icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+  />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <div class="background-glow"></div>
+
+  <main class="player">
+
+    <!-- LEFT -->
+    <section class="vinyl-section">
+
+      <div class="record-container">
+        <div class="record spinning"></div>
+
+        <img
+          src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=1200&auto=format&fit=crop"
+          class="album-art"
+          alt="Album Art"
+        />
+      </div>
+
+      <div class="song-info">
+        <h1>Midnight Espresso</h1>
+        <p>Velvet Jazz Quartet</p>
+      </div>
+
+    </section>
+
+    <!-- RIGHT -->
+    <section class="controls-section">
+
+      <div class="top-bar">
+        <h2>Rainy Reading Room</h2>
+
+        <button id="themeToggle">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+      </div>
+
+      <!-- Playlist -->
+      <div class="playlist" id="playlist"></div>
+
+      <!-- Progress -->
+      <div class="progress-area">
+
+        <div class="time">
+          <span>1:24</span>
+          <span>4:12</span>
+        </div>
+
+        <input type="range" value="30" class="progress-bar">
+
+      </div>
+
+      <!-- Controls -->
+      <div class="controls">
+
+        <button>
+          <i class="fa-solid fa-backward"></i>
+        </button>
+
+        <button class="play-btn" id="playBtn">
+          <i class="fa-solid fa-play"></i>
+        </button>
+
+        <button>
+          <i class="fa-solid fa-forward"></i>
+        </button>
+
+      </div>
+
+      <!-- Rain Toggle -->
+      <div class="rain-container">
+
+        <div class="rain-text">
+          <h3>Rain Ambience</h3>
+          <p>Add soft rain sounds while reading</p>
+        </div>
+
+        <label class="switch">
+          <input type="checkbox" id="rainToggle">
+          <span class="slider"></span>
+        </label>
+
+      </div>
+
+      <!-- Volume -->
+      <div class="volume-container">
+
+        <i class="fa-solid fa-volume-low"></i>
+
+        <input type="range" min="0" max="100" value="70">
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Audio -->
+  <audio id="music"></audio>
+  <audio id="rainAudio" loop></audio>
+
+  <script src="script.js"></script>
+</body>
+</html>
