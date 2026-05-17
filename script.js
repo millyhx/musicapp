@@ -30,23 +30,23 @@ let isPlaying = false;
 
 const songs = [
   {
-    title: "Midnight Espresso",
+    title: "Maple Street After Rain",
     artist: "Velvet Jazz Quartet",
     src: "assets/jazz1.mp3"
   },
   {
-    title: "Vinyl Dreams",
+    title: "Autumn Cigarettes & Soft Sax",
     artist: "Blue Note Society",
     src: "assets/jazz2.mp3"
   },
   {
-    title: "After Hours",
+    title: "The Last Warm Window",
     artist: "Noir Avenue",
     src: "assets/jazz3.mp3"
   },
   {
-    title: "After",
-    artist: "Noir Avenue",
+    title: "Moonlight Over Soft Rain",
+    artist: "Jazz Street Cafe",
     src: "assets/jazz4.mp3"
   }
 ];

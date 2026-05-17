@@ -8,30 +8,17 @@
 
 body {
   font-family: 'Inter', sans-serif;
-  background: #111111;
+  background-image: url(assets/background.png);
   color: #f4f1ea;
   min-height: 100vh;
   overflow-x: hidden;
-
+  background-size: cover;
+  background-repeat: no-repeat;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.background-glow {
-  position: absolute;
-  width: 700px;
-  height: 700px;
-
-  background: radial-gradient(
-    circle,
-    rgba(180, 120, 50, 0.18),
-    transparent 70%
-  );
-
-  filter: blur(80px);
-  z-index: 0;
-}
 
 .player {
   position: relative;
@@ -164,9 +151,11 @@ body {
 }
 
 .song-info h1 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 3rem;
-  font-weight: 600;
+  font-family: "Quicksand", sans-serif;
+  font-size: 2rem;
+  font-weight: 200;
+  font-style: normal;
+
 }
 
 .song-info p {
@@ -199,8 +188,10 @@ body {
 }
 
 .top-bar h2 {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 2rem;
+  font-family: "Cherry Bomb One", system-ui;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 4rem;
 }
 
 .top-bar button {
