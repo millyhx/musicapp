@@ -12,21 +12,14 @@ const songTitle = document.querySelector(".song-info h1");
 const songArtist = document.querySelector(".song-info p");
 
 const progressBar = document.getElementById("progressBar");
-const volumeBar = document.getElementById("volumeBar");
 
 const currentTimeEl = document.getElementById("currentTime");
 const durationEl = document.getElementById("duration");
 
 const rainToggle = document.getElementById("rainToggle");
-const rainVolume = document.getElementById("rainVolume");
 const rainAudio = document.getElementById("rainAudio");
 const canvas = document.getElementById("rainCanvas");
 const ctx = canvas.getContext("2d");
-
-// always keep volume synced
-setMusicVolume(volumeBar.value);
-setRainVolume(rainVolume.value);
-
 
 let currentSong = 0;
 let isPlaying = false;
@@ -54,16 +47,12 @@ const songs = [
   }
 ];
 
-
 let audioUnlocked = false;
 
 function unlockAudio() {
   if (audioUnlocked) return;
 
-  setMusicVolume(volumeBar.value);
-  setRainVolume(rainVolume.value);
-
-  // iOS "unlock" trick
+  // iOS unlock trick (music only)
   music.play().then(() => music.pause()).catch(() => {});
 
   audioUnlocked = true;
@@ -73,7 +62,6 @@ document.addEventListener("touchstart", unlockAudio, { once: true });
 
 
 // LOAD SONG
-
 function loadSong(index) {
   return new Promise((resolve) => {
     const song = songs[index];
@@ -89,23 +77,16 @@ function loadSong(index) {
     currentTimeEl.textContent = "0:00";
     durationEl.textContent = "0:00";
 
-    setMusicVolume(volumeBar.value);
-    setRainVolume(rainVolume.value);
-
     updatePlaylistUI();
 
-    music.onloadedmetadata = () => {
-      resolve();
-    };
+    music.onloadedmetadata = () => resolve();
   });
 }
-// PLAY SONG
 
+// PLAY SONG
 async function playSong() {
   try {
     await music.play();
-
-    setMusicVolume(volumeBar.value);
 
     isPlaying = true;
     playBtn.innerHTML = `<i class="fa-solid fa-pause"></i>`;
@@ -120,22 +101,17 @@ function pauseSong() {
   music.pause();
 
   isPlaying = false;
-
   playBtn.innerHTML = `<i class="fa-solid fa-play"></i>`;
   vinyl.classList.remove("spinning");
 }
 
 // PLAY BUTTON
-
 playBtn.addEventListener("click", async () => {
   unlockAudio();
 
   if (!isPlaying) {
     try {
-
-      // always ensure song is loaded BEFORE play
       await loadSong(currentSong);
-
       await music.play();
 
       isPlaying = true;
@@ -145,18 +121,12 @@ playBtn.addEventListener("click", async () => {
     } catch (e) {
       console.log("Play blocked:", e);
     }
-
   } else {
-    music.pause();
-
-    isPlaying = false;
-    playBtn.innerHTML = `<i class="fa-solid fa-play"></i>`;
-    vinyl.classList.remove("spinning");
+    pauseSong();
   }
 });
 
-// CREATE PLAYLIST
-
+// PLAYLIST
 songs.forEach((song, index) => {
   const track = document.createElement("div");
   track.classList.add("track");
@@ -166,17 +136,16 @@ songs.forEach((song, index) => {
     <small>${song.artist}</small>
   `;
 
-  track.addEventListener("click", () => {
+  track.addEventListener("click", async () => {
     currentSong = index;
-    loadSong(currentSong);
-    playSong();
+    await loadSong(currentSong);
+    await playSong();
   });
 
   playlistContainer.appendChild(track);
 });
 
-// UPDATE ACTIVE SONG
-
+// ACTIVE TRACK UI
 function updatePlaylistUI() {
   const tracks = document.querySelectorAll(".track");
 
@@ -187,12 +156,11 @@ function updatePlaylistUI() {
   }
 }
 
-// NEXT SONG
-
+// NEXT SONG AUTO
 music.addEventListener("ended", async () => {
   currentSong = (currentSong + 1) % songs.length;
 
-  loadSong(currentSong);
+  await loadSong(currentSong);
 
   if (isPlaying) {
     try {
@@ -203,17 +171,12 @@ music.addEventListener("ended", async () => {
   }
 });
 
-// PROGRESS BAR TRACKING
-
+// PROGRESS BAR
 music.addEventListener("timeupdate", () => {
   if (!music.duration) return;
 
-  const progressPercent =
-    (music.currentTime / music.duration) * 100;
+  progressBar.value = (music.currentTime / music.duration) * 100;
 
-  progressBar.value = progressPercent;
-
-  // update time display
   currentTimeEl.textContent = formatTime(music.currentTime);
   durationEl.textContent = formatTime(music.duration);
 });
@@ -221,56 +184,44 @@ music.addEventListener("timeupdate", () => {
 progressBar.addEventListener("input", () => {
   if (!music.duration) return;
 
-  const seekTime =
+  music.currentTime =
     (progressBar.value / 100) * music.duration;
-
-  music.currentTime = seekTime;
 });
 
 function formatTime(seconds) {
   const mins = Math.floor(seconds / 60);
   const secs = Math.floor(seconds % 60);
-
   return `${mins}:${secs < 10 ? "0" : ""}${secs}`;
 }
 
-// FORWARD AND BACK BUTTONS
-
+// CONTROLS
 const prevBtn = document.querySelector(".fa-backward").parentElement;
 const nextBtn = document.querySelector(".fa-forward").parentElement;
 
-prevBtn.addEventListener("click", () => {
-  currentSong--;
+prevBtn.addEventListener("click", async () => {
+  currentSong = (currentSong - 1 + songs.length) % songs.length;
 
-  if (currentSong < 0) {
-    currentSong = songs.length - 1;
-  }
-
-  loadSong(currentSong);
-  playSong();
+  await loadSong(currentSong);
+  await playSong();
 });
 
-nextBtn.addEventListener("click", () => {
-  currentSong++;
+nextBtn.addEventListener("click", async () => {
+  currentSong = (currentSong + 1) % songs.length;
 
-  if (currentSong >= songs.length) {
-    currentSong = 0;
-  }
-
-  loadSong(currentSong);
-  playSong();
+  await loadSong(currentSong);
+  await playSong();
 });
 
 
 // RAIN TOGGLE
+rainAudio.src = "assets/rain.mp3";
+rainAudio.loop = true;
+rainAudio.preload = "auto";
 
 rainToggle.addEventListener("change", async () => {
   unlockAudio();
 
   if (rainToggle.checked) {
-    rainAudio.src = "assets/rain.mp3";
-    rainAudio.loop = true;
-
     try {
       await rainAudio.play();
     } catch (e) {
@@ -282,16 +233,7 @@ rainToggle.addEventListener("change", async () => {
   }
 });
 
-rainVolume.addEventListener("input", () => {
-
-  rainAudio.volume = parseFloat(rainVolume.value);
-
-});
-
 // RAIN CANVAS
-
-
-
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
@@ -331,33 +273,10 @@ function drawRain() {
 
 drawRain();
 
-// VOLUME CONTROLS
-
-volumeBar.addEventListener("input", () => {
-  setMusicVolume(volumeBar.value);
-});
-
-function setMusicVolume(v) {
-  music.volume = Math.min(1, Math.max(0, parseFloat(v) || 0));
-}
-
-function setRainVolume(v) {
-  rainAudio.volume = Math.min(1, Math.max(0, parseFloat(v) || 0));
-}
-
 // THEME TOGGLE
-
 themeToggle.addEventListener("click", () => {
-
   document.body.classList.toggle("light");
-
 });
-
-
-rainAudio.src = "assets/rain.mp3";
-rainAudio.loop = true;
-rainAudio.preload = "auto";
 
 // INITIAL LOAD
-
 loadSong(currentSong);

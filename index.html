@@ -20,15 +20,14 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
 
+  <link href="https://fonts.googleapis.com/css2?family=Cherry+Bomb+One&family=Quicksand:wght@300..700&display=swap" rel="stylesheet">
 </head>
+
 <body>
 
   <main class="player">
-      <canvas id="rainCanvas"></canvas>
+    <canvas id="rainCanvas"></canvas>
 
     <!-- LEFT -->
     <section class="vinyl-section">
@@ -64,25 +63,16 @@
       <!-- Playlist -->
       <div class="playlist" id="playlist"></div>
 
-    <!-- Progress -->
-        <div class="progress-area">
+      <!-- Progress -->
+      <div class="progress-area">
 
         <div class="time">
-            <span id="currentTime">0:00</span>
-            <span id="duration">0:00</span>
+          <span id="currentTime">0:00</span>
+          <span id="duration">0:00</span>
         </div>
 
         <input type="range" id="progressBar" value="0" min="0" max="100">
-        </div>
-
-        <!-- Volume -->
-        <div class="volume-container">
-
-        <i class="fa-solid fa-volume-low"></i>
-
-        <input type="range" id="volumeBar" min="0" max="1" step="0.01" value="0.7">
-
-        </div>
+      </div>
 
       <!-- Controls -->
       <div class="controls">
@@ -101,32 +91,24 @@
 
       </div>
 
-    <div class="rain-container">
+      <!-- Rain -->
+      <div class="rain-container">
 
-    <div class="rain-text">
-        <h3>Rain Ambience</h3>
-        <p>Add soft rain sounds while reading</p>
-    </div>
+        <div class="rain-text">
+          <h3>Rain Ambience</h3>
+          <p>Add soft rain sounds while reading</p>
+        </div>
 
-    <div class="rain-controls">
+        <div class="rain-controls">
 
-        <label class="switch">
-        <input type="checkbox" id="rainToggle">
-        <span class="slider"></span>
-        </label>
+          <label class="switch">
+            <input type="checkbox" id="rainToggle">
+            <span class="slider"></span>
+          </label>
 
-        <input
-        type="range"
-        id="rainVolume"
-        min="0"
-        max="1"
-        step="0.01"
-        value="0.35"
-        >
+        </div>
 
-    </div>
-
-    </div>
+      </div>
 
     </section>
 
