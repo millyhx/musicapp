@@ -76,22 +76,30 @@ document.addEventListener("touchstart", unlockAudio, { once: true });
 // LOAD SONG
 
 function loadSong(index) {
-  const song = songs[index];
+  return new Promise((resolve) => {
+    const song = songs[index];
 
-  music.pause();
-  music.src = song.src;
-  music.load();
+    music.pause();
+    music.src = song.src;
+    music.load();
 
-  songTitle.textContent = song.title;
-  songArtist.textContent = song.artist;
+    songTitle.textContent = song.title;
+    songArtist.textContent = song.artist;
 
-  progressBar.value = 0;
-  currentTimeEl.textContent = "0:00";
-  durationEl.textContent = "0:00";
+    progressBar.value = 0;
+    currentTimeEl.textContent = "0:00";
+    durationEl.textContent = "0:00";
 
-  updatePlaylistUI();
+    setMusicVolume(volumeBar.value);
+    setRainVolume(rainVolume.value);
+
+    updatePlaylistUI();
+
+    music.onloadedmetadata = () => {
+      resolve();
+    };
+  });
 }
-
 // PLAY SONG
 
 async function playSong() {
@@ -121,12 +129,30 @@ function pauseSong() {
 // PLAY BUTTON
 
 playBtn.addEventListener("click", async () => {
-  unlockAudio(); // ensure iOS unlock
+  unlockAudio();
 
-  if (isPlaying) {
-    pauseSong();
+  if (!isPlaying) {
+    try {
+
+      // always ensure song is loaded BEFORE play
+      await loadSong(currentSong);
+
+      await music.play();
+
+      isPlaying = true;
+      playBtn.innerHTML = `<i class="fa-solid fa-pause"></i>`;
+      vinyl.classList.add("spinning");
+
+    } catch (e) {
+      console.log("Play blocked:", e);
+    }
+
   } else {
-    await playSong();
+    music.pause();
+
+    isPlaying = false;
+    playBtn.innerHTML = `<i class="fa-solid fa-play"></i>`;
+    vinyl.classList.remove("spinning");
   }
 });
 
@@ -164,15 +190,18 @@ function updatePlaylistUI() {
 
 // NEXT SONG
 
-music.addEventListener("ended", () => {
-  currentSong++;
-
-  if (currentSong >= songs.length) {
-    currentSong = 0;
-  }
+music.addEventListener("ended", async () => {
+  currentSong = (currentSong + 1) % songs.length;
 
   loadSong(currentSong);
-  playSong();
+
+  if (isPlaying) {
+    try {
+      await music.play();
+    } catch (e) {
+      console.log("Auto-next blocked:", e);
+    }
+  }
 });
 
 // PROGRESS BAR TRACKING
@@ -236,21 +265,22 @@ nextBtn.addEventListener("click", () => {
 
 // RAIN TOGGLE
 
-rainToggle.addEventListener("change", () => {
+rainToggle.addEventListener("change", async () => {
+  unlockAudio();
 
   if (rainToggle.checked) {
-
     rainAudio.src = "assets/rain.mp3";
     rainAudio.loop = true;
 
-    rainAudio.volume = parseFloat(rainVolume.value);
-
-    rainAudio.play();
-
+    try {
+      await rainAudio.play();
+    } catch (e) {
+      console.log("Rain play blocked:", e);
+    }
   } else {
     rainAudio.pause();
+    rainAudio.currentTime = 0;
   }
-
 });
 
 rainVolume.addEventListener("input", () => {
@@ -323,6 +353,11 @@ themeToggle.addEventListener("click", () => {
   document.body.classList.toggle("light");
 
 });
+
+
+rainAudio.src = "assets/rain.mp3";
+rainAudio.loop = true;
+rainAudio.preload = "auto";
 
 // INITIAL LOAD
 
