@@ -6,6 +6,7 @@ const themeToggle = document.getElementById("themeToggle");
 const playlistContainer = document.getElementById("playlist");
 
 const vinyl = document.querySelector(".record");
+const albumArt = document.querySelector(".album-art");
 
 const songTitle = document.querySelector(".song-info h1");
 const songArtist = document.querySelector(".song-info p");
@@ -19,6 +20,8 @@ const durationEl = document.getElementById("duration");
 const rainToggle = document.getElementById("rainToggle");
 const rainVolume = document.getElementById("rainVolume");
 const rainAudio = document.getElementById("rainAudio");
+const canvas = document.getElementById("rainCanvas");
+const ctx = canvas.getContext("2d");
 
 // always keep volume synced
 rainAudio.volume = rainVolume.value;
@@ -50,6 +53,7 @@ const songs = [
     src: "assets/jazz4.mp3"
   }
 ];
+
 
 // LOAD SONG
 
@@ -227,6 +231,49 @@ rainVolume.addEventListener("input", () => {
   rainAudio.volume = parseFloat(rainVolume.value);
 
 });
+
+// RAIN CANVAS
+
+
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let drops = [];
+
+for (let i = 0; i < 120; i++) {
+  drops.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    length: Math.random() * 20 + 10,
+    speed: Math.random() * 4 + 4
+  });
+}
+
+function drawRain() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  ctx.strokeStyle = "rgba(180, 200, 255, 0.25)";
+  ctx.lineWidth = 1;
+
+  for (let d of drops) {
+    ctx.beginPath();
+    ctx.moveTo(d.x, d.y);
+    ctx.lineTo(d.x, d.y + d.length);
+    ctx.stroke();
+
+    d.y += d.speed;
+
+    if (d.y > canvas.height) {
+      d.y = -20;
+      d.x = Math.random() * canvas.width;
+    }
+  }
+
+  requestAnimationFrame(drawRain);
+}
+
+drawRain();
 
 // VOLUME CONTROLS
 
