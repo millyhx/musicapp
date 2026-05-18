@@ -55,11 +55,30 @@ const songs = [
 ];
 
 
+let audioUnlocked = false;
+
+function unlockAudio() {
+  if (audioUnlocked) return;
+
+  music.volume = volumeBar.value;
+  rainAudio.volume = rainVolume.value;
+
+  // iOS "unlock" trick
+  music.play().then(() => music.pause()).catch(() => {});
+  rainAudio.play().then(() => rainAudio.pause()).catch(() => {});
+
+  audioUnlocked = true;
+}
+
+document.addEventListener("touchstart", unlockAudio, { once: true });
+
+
 // LOAD SONG
 
 function loadSong(index) {
   const song = songs[index];
 
+  music.pause();
   music.src = song.src;
   music.load();
 
@@ -75,13 +94,18 @@ function loadSong(index) {
 
 // PLAY SONG
 
-function playSong() {
-  music.play();
+async function playSong() {
+  try {
+    await music.play(); // for iOS reliability
 
-  isPlaying = true;
+    isPlaying = true;
+    playBtn.innerHTML = `<i class="fa-solid fa-pause"></i>`;
+    vinyl.classList.add("spinning");
 
-  playBtn.innerHTML = `<i class="fa-solid fa-pause"></i>`;
-  vinyl.classList.add("spinning");
+  } catch (err) {
+    console.log("Playback blocked:", err);
+    isPlaying = false;
+  }
 }
 
 function pauseSong() {
@@ -95,11 +119,13 @@ function pauseSong() {
 
 // PLAY BUTTON
 
-playBtn.addEventListener("click", () => {
+playBtn.addEventListener("click", async () => {
+  unlockAudio(); // ensure iOS unlock
+
   if (isPlaying) {
     pauseSong();
   } else {
-    playSong();
+    await playSong();
   }
 });
 
