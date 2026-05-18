@@ -24,8 +24,8 @@ const canvas = document.getElementById("rainCanvas");
 const ctx = canvas.getContext("2d");
 
 // always keep volume synced
-rainAudio.volume = rainVolume.value;
-music.volume = volumeBar.value;
+setMusicVolume(volumeBar.value);
+setRainVolume(rainVolume.value);
 
 
 let currentSong = 0;
@@ -60,8 +60,8 @@ let audioUnlocked = false;
 function unlockAudio() {
   if (audioUnlocked) return;
 
-  music.volume = volumeBar.value;
-  rainAudio.volume = rainVolume.value;
+  setMusicVolume(volumeBar.value);
+  setRainVolume(rainVolume.value);
 
   // iOS "unlock" trick
   music.play().then(() => music.pause()).catch(() => {});
@@ -96,7 +96,9 @@ function loadSong(index) {
 
 async function playSong() {
   try {
-    await music.play(); // for iOS reliability
+    await music.play();
+
+    setMusicVolume(volumeBar.value);
 
     isPlaying = true;
     playBtn.innerHTML = `<i class="fa-solid fa-pause"></i>`;
@@ -104,7 +106,6 @@ async function playSong() {
 
   } catch (err) {
     console.log("Playback blocked:", err);
-    isPlaying = false;
   }
 }
 
@@ -304,10 +305,16 @@ drawRain();
 // VOLUME CONTROLS
 
 volumeBar.addEventListener("input", () => {
-  music.volume = volumeBar.value;
+  setMusicVolume(volumeBar.value);
 });
 
+function setMusicVolume(v) {
+  music.volume = Math.min(1, Math.max(0, parseFloat(v) || 0));
+}
 
+function setRainVolume(v) {
+  rainAudio.volume = Math.min(1, Math.max(0, parseFloat(v) || 0));
+}
 
 // THEME TOGGLE
 
