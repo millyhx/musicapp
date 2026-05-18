@@ -65,7 +65,6 @@ function unlockAudio() {
 
   // iOS "unlock" trick
   music.play().then(() => music.pause()).catch(() => {});
-  rainAudio.play().then(() => rainAudio.pause()).catch(() => {});
 
   audioUnlocked = true;
 }
