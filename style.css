@@ -455,7 +455,11 @@ input:checked + .slider::before {
 /* LIGHT MODE */
 
 body.light {
-  background: #efe7dc;
+  background-image: url('assets/background_light.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   color: #1c1c1c;
 }
 
@@ -470,6 +474,23 @@ body.light .track {
 body.light .top-bar button,
 body.light .controls button {
   color: #111;
+  background-color: darkgray;
+}
+
+body.light .controls .play-btn {
+  background-color: cornsilk !important;
+}
+
+body.light .volume-container #volumeBar {
+    accent-color: cadetblue;
+}
+
+body.light .progress-area #progressBar {
+    accent-color: cadetblue;
+}
+
+body.light .rain-controls #rainVolume {
+    accent-color: cadetblue;
 }
 
 .track,
